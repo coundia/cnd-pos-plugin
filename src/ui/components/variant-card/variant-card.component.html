@@ -1,0 +1,59 @@
+<div class="card h-100">
+	<div class="card-header" (click)="onAdd()"
+		 style="cursor: pointer;"
+	>
+		<img
+				[src]="
+      variant.assets?.length
+        ? variant.assets[0].preview
+        : variant.product?.featuredAsset?.preview
+    "
+				[alt]="variant.name"
+				style="object-fit: cover; height: 150px; width: 100%;"
+		/>
+		<div class="card-block">
+			<a
+					href="javascript:void(0)"
+					role="tooltip"
+					aria-haspopup="true"
+					class="tooltip tooltip-sm tooltip-top"
+			>
+				<h5
+						class="card-title truncate"
+						style="max-width: 250px;"
+				>
+					{{ variant.name }}
+				</h5>
+				<span class="tooltip-content">
+      {{ variant.name }}
+    </span>
+			</a>
+		</div>
+
+		<div class="card-block">
+			<h5 class="card-title">{{ (variant.priceWithTax / 100) | currency: variant.currencyCode }}</h5>
+		</div>
+	</div>
+
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item clr-row">
+			<div class="clr-col-6">
+				<button
+						class="btn btn-sm btn-warning"
+						(click)="onDecrease()"
+				>–</button>
+			</div>
+			<div class="clr-col-6" style="text-align: right;">
+				<button
+						class="btn btn-sm btn-primary"
+						(click)="onAdd()"
+				>+</button>
+			</div>
+		</li>
+		<li class="list-group-item">
+			Stock disponible : {{ variant.stockOnHand }}
+		</li>
+	</ul>
+
+
+</div>

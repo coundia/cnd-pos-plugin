@@ -1,0 +1,68 @@
+/* toolbar */
+.toolbar {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--clr-border-color);
+  margin-bottom: 1rem;
+
+  .search-box,
+  .sort-box,
+  .action-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .clear-icon {
+    cursor: pointer;
+    margin-left: -1.5rem;
+    color: var(--clr-caution-text);
+  }
+}
+
+/* loading overlay */
+.loading-overlay {
+  position: relative;
+  text-align: center;
+  padding: 2rem 0;
+  background: rgba(255,255,255,0.8);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  clr-spinner {
+    margin-right: 0.5rem;
+  }
+}
+
+/* no-results */
+clr-alert {
+  margin-bottom: 1rem;
+}
+
+/* tree styling */
+.variant-name {
+  margin-left: 0.25rem;
+  font-weight: 600;
+}
+
+.movement-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.25rem 0;
+  font-size: 0.9rem;
+  color: var(--clr-text-5);
+
+  .movement-date,
+  .movement-updated {
+    color: var(--clr-text-4);
+  }
+}
+
+/* pager */
+.pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}

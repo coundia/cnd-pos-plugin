@@ -1,0 +1,60 @@
+<vdr-page-block>
+	<vdr-action-bar>
+		<vdr-ab-left>
+			<strong class="ml-2">Alertes de Stock</strong>
+		</vdr-ab-left>
+
+		<vdr-ab-right>
+			<div class="clr-input-group">
+				<input
+						clrInput
+						type="text"
+						class="clr-input"
+						placeholder="Chercher ..."
+						[formControl]="searchTermControl"
+						(keyup.enter)="onSearch()"
+				/>
+				<button class="btn btn-primary" (click)="onSearch()">Rechercher</button>
+			</div>
+		</vdr-ab-right>
+	</vdr-action-bar>
+</vdr-page-block>
+
+<vdr-data-table-2
+		id="stock-alert-list"
+		[items]="items$ | async"
+		[itemsPerPage]="itemsPerPage$ | async"
+		[totalItems]="totalItems$ | async"
+		[currentPage]="currentPage$ | async"
+		[filters]="filters"
+		(pageChange)="setPageNumber($event)"
+		(itemsPerPageChange)="setItemsPerPage($event)"
+>
+	<vdr-dt2-column id="name" heading="Nom" [sort]="sorts.get('name')">
+		<ng-template let-v="item">{{ v.name }}</ng-template>
+	</vdr-dt2-column>
+
+	<vdr-dt2-column id="sku" heading="SKU" [sort]="sorts.get('sku')">
+		<ng-template let-v="item">{{ v.sku }}</ng-template>
+	</vdr-dt2-column>
+
+	<vdr-dt2-column id="location" heading="Lieu">
+		<ng-template let-v="item">{{ v.stockLevels[0]?.stockLocation.name || '—' }}</ng-template>
+	</vdr-dt2-column>
+
+	<vdr-dt2-column id="stockOnHand" heading="En stock" align="right">
+		<ng-template let-v="item">{{ v.stockLevels[0]?.stockOnHand ?? 0 }}</ng-template>
+	</vdr-dt2-column>
+
+	<vdr-dt2-column id="allocated" heading="Alloué" align="right">
+		<ng-template let-v="item">{{ v.stockLevels[0]?.stockAllocated ?? 0 }}</ng-template>
+	</vdr-dt2-column>
+
+	<vdr-dt2-column id="saleable" heading="Vente possible [seuil]" align="right">
+		<ng-template let-v="item">{{ v.saleable }} [{{ v.outOfStockThreshold }}]</ng-template>
+	</vdr-dt2-column>
+
+	<vdr-dt2-column id="updatedAt" heading="Modifié le" [sort]="sorts.get('updatedAt')">
+		<ng-template let-v="item">{{ v.updatedAt | localeDate:'short' }}</ng-template>
+	</vdr-dt2-column>
+</vdr-data-table-2>

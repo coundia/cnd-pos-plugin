@@ -1,0 +1,64 @@
+<div class="controls m-4">
+	<div class="btn-group">
+		<label>
+			Du&nbsp;
+			<input
+					type="date"
+					[value]="startDate"
+					(change)="onStartDateChange($event.target.value)"
+			/>
+		</label>
+		&nbsp;
+		<label>
+			Au&nbsp;
+			<input
+					type="date"
+					[value]="endDate"
+					(change)="onEndDateChange($event.target.value)"
+			/>
+		</label>
+		<button
+				class="btn btn-sm m-4"
+				[ngClass]="{
+        'btn-primary': activePreset==='today',
+        'btn-outline-secondary': activePreset!=='today'
+      }"
+				(click)="setToday()"
+		>
+			Aujourd'hui
+		</button>
+
+		<button
+				class="btn btn-sm m-4"
+				[ngClass]="{
+        'btn-primary': activePreset==='yesterday',
+        'btn-outline-secondary': activePreset!=='yesterday'
+      }"
+				(click)="setYesterday()"
+		>
+			Hier
+		</button>
+
+		<button
+				class="btn btn-sm m-4"
+				[ngClass]="{
+        'btn-primary': activePreset==='month',
+        'btn-outline-secondary': activePreset!=='month'
+      }"
+				(click)="setThisMonth()"
+		>
+			Ce mois
+		</button>
+
+		<button
+				class="btn btn-sm m-4"
+				[ngClass]="{
+        'btn-primary': activePreset==='year',
+        'btn-outline-secondary': activePreset!=='year'
+      }"
+				(click)="setThisYear()"
+		>
+			Cette année
+		</button>
+	</div>
+</div>

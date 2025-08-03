@@ -1,0 +1,136 @@
+<vdr-page-block>
+	<div class="clr-row">
+
+		<!-- Variantes -->
+
+		<div class="clr-col-6 clr-col-md-8" style="padding:.5rem;">
+
+			<!-- Search Input with Clear Icon -->
+			<div class="clr-col-12  ">
+				<div class="c-full-width">
+					<input
+							type="text"
+							placeholder="Rechercher un produit"
+							id="product-search"
+							[formControl]="searchControl"
+					/>
+					<!-- Clear icon -->
+					<button
+							type="button"
+							(click)="searchControl.setValue('')"
+							*ngIf="searchControl.value"
+					>
+						<cds-icon shape="times"></cds-icon>
+					</button>
+				</div>
+			</div>
+
+
+			<div class="clr-row">
+				<div
+						class="clr-col-12 clr-col-6 clr-col-lg-4"
+						*ngFor="let v of variants"
+						style="padding:.5rem;"
+				>
+					<variant-card
+							[variant]="v"
+							(add)="addToCart($event)"
+							(decrease)="decreaseQuantity($event)"
+					>
+
+					</variant-card>
+				</div>
+			</div>
+			<!-- Pagination -->
+			<app-pagination
+					[currentPage]="page"
+					[totalPages]="totalPages"
+			(pageChange)="onPageChange($event)"
+			></app-pagination>
+		</div>
+
+		<!-- Panier & étapes POS (droite) -->
+		<div class="clr-col-6 clr-col-md-4" style="padding:.5rem; position:sticky; top:1rem;">
+
+			<!-- Choix du client -->
+			<div class="clr-row">
+				<div class="clr-col-6">
+					<button (click)="pickerVisible = true"
+							[disabled]="validatePayment()" class="btn btn-primary"
+					>Choisir un client</button>
+
+				</div>
+				<div class="clr-col-6" *ngIf="cartItems.length > 0">
+					<button (click)="newCommand()" class="btn btn-danger" >Nouvelle commande</button>
+				</div>
+			</div>
+			<div *ngIf="selectedClient">
+				Client: {{ selectedClient.firstName }} {{ selectedClient.lastName }}
+			</div>
+			<app-customer-picker-modal
+					[visible]="pickerVisible"
+					(close)="pickerVisible = false"
+					(customerSelected)="onCustomerChosen($event)"
+			></app-customer-picker-modal>
+
+			<!-- Panier -->
+			<app-cart
+					[items]="cartItems"
+					[validatePayment] ="validatePayment()"
+					(itemsChange)="cartItems = $event"
+			></app-cart>
+
+
+			<app-payment
+					*ngIf="currentOrderId"
+					[orderId]="currentOrderId"
+					[availableMethods]="['cash','card']"
+					(paymentAdded)="onPaymentAdded()"
+			></app-payment>
+
+			<div class="clr-row c-full-width">
+				<div class="clr-col-6">
+
+					<input
+							class="clr-input"
+							type="text"
+							placeholder="Montant payé"
+							[(ngModel)]="amountReceived"
+					/>
+				</div>
+
+				<div class="clr-col-6 alert alert-success" role="alert">
+					<span>
+						Montant payé:
+					</span>
+					<span *ngIf="amountReceived != '' ">
+						{{amountReceived | number}} XOF
+					</span>
+					<span *ngIf="amountReceived == '' ">
+						{{getTotal() | number}} XOF
+					</span>
+
+				</div>
+
+			</div>
+
+			<div class="clr-row c-full-width">
+				<div class="clr-col-6 ">
+					<button [disabled]="isPaiementDisabled()"
+							class="btn btn-success"
+							(click)="confirmCommand()">Valider paiement</button>
+
+				</div>
+
+				<div class="clr-col-6">
+					<button
+							*ngIf="validatePayment()"
+							class="btn btn-primary"
+							(click)="imprimeCommand()">Imprimer</button>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</vdr-page-block>

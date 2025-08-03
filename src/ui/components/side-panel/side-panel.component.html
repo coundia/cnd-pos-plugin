@@ -1,0 +1,17 @@
+<clr-side-panel
+		[clrSidePanelBackdrop]="clrSidePanelBackdrop"
+		[clrSidePanelPinnable]="clrSidePanelPinnable"
+		[clrSidePanelStaticBackdrop]="clrSidePanelStaticBackdrop"
+		[clrSidePanelCloseButtonAriaLabel]="clrSidePanelCloseButtonAriaLabel"
+		[clrSidePanelLabelledById]="clrSidePanelLabelledById"
+		[clrSidePanelOpen]="clrSidePanelOpen"
+		[clrSidePanelSize]="clrSidePanelSize"
+		[clrSidePanelSkipAnimation]="clrSidePanelSkipAnimation"
+		(clrSidePanelOpenChange)="clrSidePanelOpen = $event"
+		[clrSidePanelPreventClose]="clrSidePanelPreventClose"
+		(clrSidePanelAlternateClose)="clrSidePanelAlternateClose.emit()"
+>
+	<ng-content select="[side-panel-title]"></ng-content>
+	<ng-content select="[side-panel-body]"></ng-content>
+	<ng-content select="[side-panel-footer]"></ng-content>
+</clr-side-panel>

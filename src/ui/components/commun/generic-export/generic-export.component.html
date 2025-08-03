@@ -1,0 +1,32 @@
+<!-- Sélection des colonnes à exporter -->
+<div class="clr-form-control mt-4" role="group" aria-labelledby="export-columns-label">
+	<label id="export-columns-label" class="clr-control-label">
+		Sélection des colonnes :
+	</label>
+	<div class="clr-control-container clr-control-inline mt-4">
+		<clr-checkbox-wrapper
+				*ngFor="let f of selectableFields; let i = index"
+				class="mr-4"
+		>
+			<input
+					clrCheckbox
+					type="checkbox"
+					[id]="'export-col-' + i"
+					[checked]="f.selected"
+					(change)="toggleField(i, $event.target.checked)"
+			/>
+			<label [for]="'export-col-' + i">{{ f.label }}</label>
+		</clr-checkbox-wrapper>
+	</div>
+	<div class="clr-subtext-wrapper mt-4">
+		<cds-icon shape="info-standard" class="clr-subtext-icon"></cds-icon>
+		<span class="clr-subtext">
+      Cochez les colonnes que vous souhaitez inclure dans le CSV.
+    </span>
+	</div>
+</div>
+
+<!-- Bouton d’export -->
+<button class="btn btn-secondary mt-3" (click)="export()">
+	{{ label }}
+</button>

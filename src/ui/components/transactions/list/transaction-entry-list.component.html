@@ -1,0 +1,174 @@
+<!--import side panel -->
+<clr-side-panel
+		[clrSidePanelOpen]="openPanelImport()"
+		[clrSidePanelSize]="'xl'"
+>
+	<h3 class="side-panel-title">
+		<clr-icon shape="pin"></clr-icon>
+		Import
+	</h3>
+
+	<div class="side-panel-body">
+		<generic-import
+				[createMutation]="CreateTransactionEntryDocument"
+				[fields]="fields"
+				(refresh)="refresh()"
+				(close)="closeImport()"
+				label="Importer CSV">
+
+		</generic-import>
+	</div>
+</clr-side-panel>
+<!--export side panel -->
+<clr-side-panel
+		[clrSidePanelOpen]="openPanelExport()"
+>
+	<h3 class="side-panel-title">
+		<clr-icon shape="pin"></clr-icon>
+		Export
+	</h3>
+
+	<div class="side-panel-body">
+		<generic-export
+				[query]="GetTransactionEntryDocument"
+				entityKey="transactionEntries"
+				[fields]="fields"
+				filename="transactions.csv"
+				label="Exporter CSV"
+		></generic-export>
+	</div>
+</clr-side-panel>
+
+<!--create side panel -->
+<clr-side-panel
+		[clrSidePanelOpen]="panelOpen()"
+		[clrSidePanelPinnable]="true"
+		[clrSidePanelPreventClose]="true"
+		(clrSidePanelAlternateClose)="showConfirm()"
+>
+	<h3 class="side-panel-title">
+		<clr-icon shape="pin"></clr-icon>
+		{{ selectedEntry() ? 'Edit' : 'Add' }} transaction
+	</h3>
+
+	<div class="side-panel-body">
+		<generic-detail
+				[detailQuery]="GetTransactionEntryDocument"
+				[createMutation]="CreateTransactionEntryDocument"
+				[updateMutation]="UpdateTransactionEntryDocument"
+				[deleteMutation]="DeleteTransactionEntryDocument"
+				entityKey="transactionEntry"
+				[entity]="selectedEntry()"
+				[fields]="fields"
+				[id]="entityId"
+				(closePanel)="onPanelClose()"
+				(refresh)="refresh()"
+		>
+
+		</generic-detail>
+
+	</div>
+</clr-side-panel>
+<!--create side panel -->
+
+<vdr-page-block>
+	<vdr-action-bar>
+		<vdr-ab-left>
+
+			<vdr-action-bar-items [locationId]="pageLocationId"></vdr-action-bar-items>
+
+
+			<button class="btn btn-danger ml-4" (click)="deleteAll()" *ngIf="selectionManager?.selection.length > 0 ">
+				<clr-icon shape="trash"></clr-icon>
+				Supprimez  ( {{(selectionManager?.selection.length)}} ) éléments
+			</button>
+
+		</vdr-ab-left>
+		<vdr-ab-right>
+			<button class="btn btn-primary ml-4" (click)="importToggle()">
+				<clr-icon shape="download"></clr-icon>
+				import
+			</button>
+
+			<button class="btn btn-success ml-4" (click)="exportToggle()">
+				<clr-icon shape="upload"></clr-icon>
+				Export
+			</button>
+			<button class="btn btn-primary ml-4" (click)="create()">
+				<clr-icon shape="add"></clr-icon>
+				Ajouter
+			</button>
+		</vdr-ab-right>
+	</vdr-action-bar>
+</vdr-page-block>
+
+
+<vdr-page-body>
+	<vdr-page-block>
+		<vdr-data-table-2
+				[id]="dataTableListId"
+				[items]="items$ | async"
+				[itemsPerPage]="itemsPerPage$ | async"
+				[totalItems]="totalItems$ | async"
+				[currentPage]="currentPage$ | async"
+				[filters]="filters"
+				(pageChange)="setPage($event)"
+				(itemsPerPageChange)="setItemsPerPage($event)"
+		>
+			<vdr-bulk-action-menu
+					[locationId]="dataTableListId"
+					[hostComponent]="this"
+					[selectionManager]="selectionManager">
+
+			</vdr-bulk-action-menu>
+			<vdr-dt2-search
+					[searchTermControl]="searchTermControl"
+					searchTermPlaceholder="Filter by code"
+					(search)="onSearch()"
+			></vdr-dt2-search>
+
+			<!-- colonnes -->
+			<vdr-dt2-column [heading]="'ID'"  id="id"  [hiddenByDefault]="true" [sort]="sorts.get('id')">
+				<ng-template let-item="item">{{ item.id }}</ng-template>
+			</vdr-dt2-column>
+			<vdr-dt2-column [heading]="'Code'"
+							[hiddenByDefault]="true"
+							id="code"  [sort]="sorts.get('code')">
+				<ng-template let-item="item">{{ item.code }}</ng-template>
+			</vdr-dt2-column>
+			<vdr-dt2-column [heading]="'Amount'"  id="amount"  [sort]="sorts.get('amount')">
+				<ng-template let-item="item">{{ item.amount }}</ng-template>
+			</vdr-dt2-column>
+			<vdr-dt2-column [heading]="'Description'"  id="description"  [optional]="true">
+				<ng-template let-item="item">{{ item.description }}</ng-template>
+			</vdr-dt2-column>
+			<vdr-dt2-column [heading]="'Type'"  id="typeEntry"  [sort]="sorts.get('typeEntry')">
+				<ng-template let-item="item">{{ item.typeEntry }}</ng-template>
+			</vdr-dt2-column>
+
+			<vdr-dt2-column [heading]="'date Transaction'" id="'dateTransaction"  [sort]="sorts.get('dateTransaction')" >
+				<ng-template let-item="item">{{ item.dateTransaction | localeDate: 'short' }}</ng-template>
+			</vdr-dt2-column>
+
+			<vdr-dt2-column [heading]="'Created At'" id="created-at"
+							[hiddenByDefault]="true"
+							[sort]="sorts.get('createdAt')">
+				<ng-template let-item="item">{{ item.createdAt | localeDate: 'short' }}</ng-template>
+			</vdr-dt2-column>
+			<vdr-dt2-column [heading]="'Updated At'" id="'updated-at"
+							[hiddenByDefault]="true"
+							[sort]="sorts.get('updatedAt')">
+				<ng-template let-item="item">{{ item.updatedAt | localeDate: 'short' }}</ng-template>
+			</vdr-dt2-column>
+
+			<vdr-dt2-column [heading]="'Actions'">
+				<ng-template let-item="item">
+					<button class="btn btn-sm btn-secondary" (click)="edit(item)">
+						<clr-icon shape="pencil"></clr-icon>
+					</button>
+				</ng-template>
+			</vdr-dt2-column>
+		</vdr-data-table-2>
+
+	</vdr-page-block>
+</vdr-page-body>

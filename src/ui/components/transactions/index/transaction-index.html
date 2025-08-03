@@ -1,0 +1,27 @@
+<div>
+	<button class="btn btn-success" (click)="onSync()">Start Sync</button>
+
+</div>
+<div class="main-container m-4">
+
+	<clr-tabs>
+
+		<clr-tab>
+			<button clrTabLink>Transactions</button>
+			<clr-tab-content *clrIfActive>
+
+				<transaction-entry-list/>
+
+			</clr-tab-content>
+		</clr-tab>
+
+		<clr-tab>
+			<button clrTabLink>Dashboard</button>
+			<clr-tab-content *clrIfActive>
+ 				<transaction-dashboard/>
+			</clr-tab-content>
+		</clr-tab>
+
+	</clr-tabs>
+
+</div>

@@ -1,0 +1,138 @@
+<div class="clr-col-auto sort-box">
+	<div class="toolbar clr-row clr-align-items-center clr-justify-content-between">
+		<div class="clr-col-auto search-box">
+			<clr-input-container>
+				<input
+						clrInput
+						type="text"
+						placeholder="Rechercher par nom…"
+						[formControl]="searchControl"
+				/>
+				<clr-icon
+						*ngIf="searchControl.value"
+						shape="times-circle"
+						class="clear-icon"
+						(click)="searchControl.reset()"
+						title="Clear search"
+				></clr-icon>
+			</clr-input-container>
+		</div>
+		<div class="clr-col-auto action-box">
+			<button clrButton size="sm" (click)="expandAll()" title="Expand all">
+				<cds-icon shape="angle-double-down"></cds-icon> Expand All
+			</button>
+			<button clrButton size="sm" (click)="collapseAll()" title="Collapse all">
+				<cds-icon shape="angle-double-up"></cds-icon> Collapse All
+			</button>
+		</div>
+	</div>
+
+	<clr-select-container>
+		<label>Tri</label>
+		<select clrSelect [formControl]="sortControl">
+			<option value="updatedAt-desc" selected>Updated ↓</option>
+			<option value="updatedAt-asc">Updated ↑</option>
+			<option value="name-asc">Name ↑</option>
+			<option value="name-desc">Name ↓</option>
+		</select>
+	</clr-select-container>
+</div>
+
+<div *ngIf="loading" class="loading-overlay">
+	<clr-spinner clrInline size="lg"></clr-spinner>
+	<span>Loading…</span>
+</div>
+
+<clr-alert *ngIf="!loading && totalItems === 0" clrAlertType="info">
+	<clr-alert-item>No variants match your criteria.</clr-alert-item>
+</clr-alert>
+
+
+<table class="table">
+	<thead>
+		 <tr>
+			<th >Produits</th>
+			<th >En stock</th>
+			<th >Reservé</th>
+			<th >Seuil d'alerte</th>
+			<th >Mouvements</th>
+		 </tr>
+	</thead>
+	<tbody>
+		 <ng-container *ngIf="!loading && totalItems > 0" aria-label="Stock Movements">
+		 <ng-container *ngFor="let v of variants; trackBy: trackByVariant">
+			 <tr  >
+				 <td class="">{{v.name}}</td>
+				 <td class="text-left">
+					 <div
+							 class="text-left"
+							 [ngClass]="{
+								  'alert alert-danger': v.stockLevels[0]?.stockOnHand <= v.outOfStockThreshold || v.stockLevels[0]?.stockOnHand === 0,
+
+								}"
+							 role="alert"
+					 >
+					 {{v.stockLevels[0]?.stockOnHand}}
+					 </div>
+				 </td>
+				 <td class="text-left">{{v.stockLevels[0]?.stockAllocated}}</td>
+				 <td class="text-left">{{v.outOfStockThreshold}}</td>
+				 <td>
+			 <clr-tree>
+				 <clr-tree-root>
+					 <clr-tree-node
+							 [clrLazy]="false"
+							 [clrExpanded]="expandedVariants.has(v.id)"
+					 >
+						 <div class="clr-row ">
+								 <div class="clr-col-auto text-muted">
+									 {{ v.stockMovements.items.length }} movements
+								 </div>
+						 </div>
+						 <ng-template clrIfExpanded>
+							 <clr-datagrid [clrDgLoading]="false" class="mt-2">
+								 <clr-dg-column clrDgSortBy="createdAt">Date</clr-dg-column>
+								 <clr-dg-column clrDgSortBy="updatedAt">Updated</clr-dg-column>
+								 <clr-dg-column clrDgSortBy="type">Type</clr-dg-column>
+								 <clr-dg-column clrDgAlign="end" clrDgSortBy="quantity">Qty</clr-dg-column>
+
+								 <clr-dg-row
+										 *clrDgItems="let m of v.stockMovements.items; trackBy: trackByMovement"
+								 >
+									 <clr-dg-cell>{{ m.createdAt | date:'short' }}</clr-dg-cell>
+									 <clr-dg-cell>
+										 {{ m.updatedAt ? (m.updatedAt | date:'short') : '–' }}
+									 </clr-dg-cell>
+									 <clr-dg-cell>{{ m.type }}</clr-dg-cell>
+									 <clr-dg-cell class="text-right">{{ m.quantity }}</clr-dg-cell>
+								 </clr-dg-row>
+
+								 <clr-dg-footer>
+									 {{ v.stockMovements.items.length }} movements
+								 </clr-dg-footer>
+							 </clr-datagrid>
+						 </ng-template>
+					 </clr-tree-node>
+				 </clr-tree-root>
+			 </clr-tree>
+				 </td>
+			 </tr>
+		 </ng-container>
+		 </ng-container>
+	</tbody>
+</table>
+
+<nav *ngIf="totalPages > 1" class="pager mt-3">
+	<button clrButton size="sm" [disabled]="page === 1" (click)="goToPage(page - 1)">
+		&laquo; Prev
+	</button>
+	<span class="mx-2">Page {{ page }} / {{ totalPages }}</span>
+	<button
+			clrButton
+			size="sm"
+			[disabled]="page === totalPages"
+			(click)="goToPage(page + 1)"
+	>
+		Next &raquo;
+	</button>
+</nav>

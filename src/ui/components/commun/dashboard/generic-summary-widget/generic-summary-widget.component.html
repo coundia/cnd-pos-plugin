@@ -1,0 +1,9 @@
+<div class="stats">
+	<div
+			class="stat"
+			*ngFor="let stat of stats"
+			tabindex="0">
+		<div class="stat-figure">{{ stat.value }}</div>
+		<div class="stat-label">{{ stat.label }}</div>
+	</div>
+</div>

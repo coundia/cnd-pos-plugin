@@ -1,0 +1,83 @@
+<div class="clr-form-control clr-form-control-inline">
+	<label class="clr-control-label">{{ label }}</label>
+	<div class="clr-control-container">
+		<input type="file" accept=".csv" (change)="onFileSelected($event)" />
+
+		<button
+				type="button"
+				class="btn btn-outline-secondary ml-2"
+				(click)="generateTemplate()"
+		>
+			Exemple de template
+		</button>
+
+		<button
+				type="button"
+				class="btn btn-success ml-2"
+				(click)="togglePreview()"
+				[disabled]="!file"
+		>
+			Valider
+		</button>
+
+		<!-- Nouveau bouton Reset -->
+		<button
+				type="button"
+				class="btn btn-outline-danger ml-2"
+				(click)="reset()"
+		>
+			Reset
+		</button>
+	</div>
+</div>
+
+<!-- Erreurs -->
+<div *ngIf="errors().length" class="alert alert-danger mt-2">
+	<ul>
+		<li *ngFor="let err of errors()">{{ err }}</li>
+	</ul>
+</div>
+
+<!-- Logs -->
+<div *ngIf="logs().length" class="alert alert-info mt-2">
+	<ul>
+		<li *ngFor="let log of logs()">{{ log }}</li>
+	</ul>
+</div>
+
+<!-- Tableau de preview -->
+<div *ngIf="showPreview()" class="mt-4">
+	<table class="table table-compact clr-table-striped">
+		<thead>
+		<tr>
+			<th *ngFor="let col of previewCols">{{ col.header }}</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr *ngFor="let row of previewRows">
+			<td *ngFor="let col of previewCols">
+				{{ row[col.fieldName] }}
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+<div class="modal-footer">
+	<button
+			class="btn btn-danger mt-2"
+			(click)="onClose()"
+	>
+		Fermer
+	</button>
+	<button
+			class="btn btn-primary mt-2"
+			(click)="import()"
+			[disabled]="loading || previewRows.length === 0 || imported()"
+	>
+		Importer ({{ previewRows.length }})
+	</button>
+
+</div>
+
+

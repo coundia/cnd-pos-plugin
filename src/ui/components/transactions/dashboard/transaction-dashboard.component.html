@@ -1,0 +1,15 @@
+<app-date-range-picker
+		[startDate]="startDate()"
+		[endDate]="endDate()"
+		(rangeChange)="onDateRangeChange($event)"
+></app-date-range-picker>
+
+<div class="dashboard-container">
+	<generic-summary-widget [stats]="stats()"></generic-summary-widget>
+</div>
+
+<h2>Entrées</h2>
+<vdr-custom-chart [myEntries]="metricsCredit()" [myOptions]="myOptions"></vdr-custom-chart>
+
+<h2>Sorties</h2>
+<vdr-custom-chart [myEntries]="metricsDebit()" [myOptions]="myOptions"></vdr-custom-chart>

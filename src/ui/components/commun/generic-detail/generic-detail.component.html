@@ -1,0 +1,63 @@
+<form class="clr-form" [formGroup]="form" (ngSubmit)="save(false)">
+	<ng-container *ngFor="let f of fields">
+		<vdr-form-field [label]="f.label">
+			<ng-container [ngSwitch]="f.type">
+				<input
+						*ngSwitchDefault
+						[type]="f.type"
+						[formControlName]="f.name"
+				/>
+				<!-- select-->
+				<select *ngSwitchCase="'select'" [formControlName]="f.name">
+					<option *ngFor="let o of f.options" [value]="o.value">{{ o.label }}</option>
+				</select>
+				<!-- Multi Toggle  -->
+				<clr-toggle-container *ngSwitchCase="'multi-toggle'">
+					<clr-toggle-wrapper *ngFor="let o of f.options">
+						<input
+								type="checkbox"
+								clrToggle
+								[value]="o.value"
+								[checked]="form.get(f.name)?.value.includes(o.value)"
+								(change)="onMultiToggleChange(f.name, $event)"
+						/>
+						<label>{{ o.label }}</label>
+					</clr-toggle-wrapper>
+				</clr-toggle-container>
+				<!-- Single Toggle -->
+				<clr-toggle-container *ngSwitchCase="'toggle'">
+					<clr-toggle-wrapper>
+						<label>{{ f.toggle?.on }} ? </label>
+						<input
+								type="checkbox"
+								clrToggle
+								[checked]="form.get(f.name)?.value === f.toggle?.on"
+								(change)="onSingleToggleChange(f.name, $event, f)"
+						/>
+
+					</clr-toggle-wrapper>
+				</clr-toggle-container>
+<!--				fin switch-->
+			</ng-container>
+		</vdr-form-field>
+	</ng-container>
+
+	<div class="mt-4">
+		<button class="btn btn-danger" type="button" (click)="closePanel.emit()">Fermer</button>
+		<button class="btn btn-primary ml-4" type="submit">
+			{{ id ? 'Mettre à jour' : 'Créer' }}
+		</button>
+		<button class="btn btn-warning ml-4" type="button" (click)="save(true)">
+			{{ id ? 'Mettre à jour et rester' : 'Créer et rester' }}
+		</button>
+		<!-- NEW: Delete button -->
+		<button
+				*ngIf="id && deleteMutation"
+				class="btn btn-outline-danger ml-4"
+				type="button"
+				(click)="delete()"
+		>
+			Supprimer
+		</button>
+	</div>
+</form>

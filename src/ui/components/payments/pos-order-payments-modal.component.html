@@ -1,0 +1,159 @@
+<div class="drawer-modal">
+
+	<!-- Submit button -->
+	<div class="clr-row clr-form-control" *ngIf="remainingToPay > 0">
+		<!-- New payment amount -->
+		<div class="clr-offset-3 clr-form-control m-10" *ngIf="remainingToPay > 0">
+			<label class="clr-control-label">Nouveau paiement</label>
+			<div class="clr-control-container">
+				<input
+						class="clr-input"
+						type="number"
+						min="0.01"
+						[formControl]="amountControl"
+						placeholder="Ex : 12000"
+				/>
+				<div
+						class="clr-subtext text-error"
+						*ngIf="amountControl.invalid && amountControl.touched"
+				>
+					Entrez un montant valide (&gt; 0)
+				</div>
+				<button
+						class="btn btn-primary"
+						(click)="addPayment()"
+						[disabled]="amountControl.invalid || remainingToPay <= 0"
+				>
+					Ajouter un paiement
+				</button>
+			</div>
+		</div>
+
+
+	</div>
+	<div class="p-4 border border-base-content bg-white" #paymentsContent>
+		<h2 class="text-lg font-bold mb-4">Paiements </h2>
+
+		<!-- Clarity horizontal form -->
+		<div class="clr-row">
+			<div class="clr-col-12">
+				{{ order.customer?.firstName }} {{ order.customer?.lastName }}
+			</div>
+			<div class="clr-col-12">
+				<div class="clr-form clr-form-horizontal">
+
+					<!-- Order code (read-only) -->
+					<div class="clr-form-control">
+						<label class="clr-control-label">Ref.</label>
+						<div class="clr-control-container">
+							{{order?.code || 'N/A'}}
+						</div>
+					</div>
+
+
+					<div class="clr-form-control clr-mb-4">
+						<label class="clr-control-label">Montant TTC (XOF)</label>
+						<span>
+				{{ totalToPay/100 | number: '1.2-2' }}
+				</span>
+					</div>
+
+					<!-- Order date (read-only) -->
+					<div class="clr-form-control">
+						<label class="clr-control-label">Date commande</label>
+						<div class="clr-control-container">
+							{{order?.createdAt | date:'long'}}
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+
+		<!-- Payment summary -->
+		<div class="clr-row ">
+
+			<div class="clr-col-12">
+				<!-- Complete -->
+				<div *ngIf="remainingToPay === 0" class="alert alert-success" role="alert">
+					<cds-icon class="alert-icon" shape="success-standard"></cds-icon>
+					<span class="alert-text">Paiement complet.</span>
+				</div>
+
+				<!-- Incomplete -->
+				<div *ngIf="remainingToPay > 0" class="alert alert-danger " role="alert">
+
+					<cds-icon class="alert-icon" shape="warning-standard"></cds-icon>
+					<span class="alert-text">
+						Paiement restant : {{ remainingToPay / 100 | number }}
+						{{ order?.currencyCode }}
+					  </span>
+				</div>
+
+				<!-- Excess -->
+				<div *ngIf="remainingToPay < 0" class="alert alert-danger alert-lightweight" role="alert">
+
+					<cds-icon class="alert-icon" shape="warning-standard"></cds-icon>
+					<span class="alert-text">
+                Paiement en excès : {{ (remainingToPay * -1) / 100 | number }}
+                {{ order?.currencyCode }}
+              </span>
+
+				</div>
+			</div>
+		</div>
+
+		<!-- Payments table -->
+		<table
+				class="table tabs-overflow"
+				*ngIf="order?.payments?.length"
+		>
+			<thead>
+			<tr>
+				<th class="text-right">Montant</th>
+				<th>Date</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr *ngFor="let p of order.payments">
+
+
+				<td class="text-right">
+					{{ (p.amount || 0) / 100 | number:'1.2-2' }}
+					{{ order?.currencyCode }}
+				</td>
+
+				<td>{{ p.createdAt | date:'long' }}</td>
+
+			</tr>
+			</tbody>
+		</table>
+
+		<!-- Payment total -->
+		<div class="clr-row clr-mt-4">
+			<div class="clr-col-12">
+				<div class="alert alert-primary" role="alert">
+					<strong>Montant déjà payé :</strong>
+					{{ totalPaid / 100 | number:'1.2-2' }}
+					{{ order?.currencyCode }}
+				</div>
+			</div>
+		</div>
+
+		<!-- No-payments fallback -->
+		<div
+				*ngIf="!order?.payments?.length"
+				class="text-center text-muted clr-mt-4"
+		>
+			Aucun paiement trouvé.
+		</div>
+	</div>
+
+	<!-- Vendure dialog buttons -->
+	<ng-template vdrDialogButtons>
+		<button class="btn btn-outline" (click)="printPaymentsPdf()">Exporter PDF</button>
+		<button class="btn" (click)="close()">Fermer</button>
+	</ng-template>
+
+</div>
