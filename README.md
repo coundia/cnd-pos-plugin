@@ -3,6 +3,17 @@
 ```bash
 npm i cnd-pos-plugin
 
+npm install --save-dev @vendure/ui-devkit
+
+npm install pdf-lib html-to-image papaparse
+
+npm install cross-fetch
+
+npx vendure migrate
+
+npm run dev
+
+
 ```
 
 ```
