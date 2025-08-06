@@ -8,20 +8,20 @@ npm i cnd-pos-plugin
 ```
 \\1) add import path from 'path';
 
-import {HelloPlugin} from "cnd-pos-plugin";
+import {CndPosPlugin} from "cnd-pos-plugin";
 
 export const config: VendureConfig = {
 		// .. config options
 		plugins: [
 		\\2) add plugin  
-		  HelloPlugin.init({}),
+		  CndPosPlugin.init({}),
 		 
 		},
 		app: compileUiExtensions({
 					outputPath: path.join(__dirname, '../admin-ui'),
 					extensions: [
 					\\3) add extension
-						HelloPlugin.ui
+						CndPosPlugin.ui
 					],
 					devMode: IS_DEV,
 				}),
@@ -30,8 +30,3 @@ export const config: VendureConfig = {
 };```
 
 
-# Btn hello on order detail page
-
-http://localhost:4200/admin/orders/1
-
-![sayhello.png](sayhello.png)
